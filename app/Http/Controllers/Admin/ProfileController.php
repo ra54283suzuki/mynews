@@ -16,8 +16,20 @@ class ProfileController extends Controller
         return view('admin.profile.create');
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        // Varidationを行う
+        $this->Validate($request, Profile::$rules);
+        
+        $profile = new Profile;
+        $form = $request->all();
+        
+        
+        // データベースに保存する
+        $profile->fill($form);
+        $profile->save();
+        
+        // admin/profile/createにリダイレクトする
         return redirect('admin/profile/create');
     }
 
@@ -31,20 +43,4 @@ class ProfileController extends Controller
         return redirect('admin/profile/edit');
     }
     
-    public function create_2(Request $request)
-    {
-        // Varidationを行う
-        $this->Validate($request, Profile::$rules);
-        
-        $profile = new Profile;
-        $form = $request->all();
-        
-        
-        // データベースに保存する
-        $news->fill($form);
-        $news->save();
-        
-        // admin/profile/createにリダイレクトする
-        return redirect('admin/profile/create');
-    }
 }
