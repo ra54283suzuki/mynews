@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 
 // 以下を追記することでProfile Modelが扱えるようになる
 use App\Profile;
+use App\History;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -66,17 +68,22 @@ class ProfileController extends Controller
         $profile = Profile::find($request->id);
         
         // 送信されてきたフォームデータを格納する
-        $profile_form = $requewt->all();
+        $profile_form = $request->all();
         unset($profile_form['_token']);
+        
+        $history = new History;
+        $history->profile_id = $profile->id;
+        $history->edited_at = Carbon::now();
+        $history->save();
         
         // 該当するデータを上書きして保存する
         $profile->fill($profile_form)->save();
-        return redirect('admin/profile/edit');
+        return redirect('admin/profile');
     }
     
      public function delete(Request $request)
     {
-        // 該当するNews Modelを取得
+        // 該当するProfile Modelを取得
         $profile = Profile::find($request->id);
         // 削除
         $profile->delete();
